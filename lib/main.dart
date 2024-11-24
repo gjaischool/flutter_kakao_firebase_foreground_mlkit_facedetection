@@ -443,7 +443,7 @@ class SleepDetectionHandler extends TaskHandler {
           case 'update_drowsiness_state':
             // UI에서 감지된 졸음 상태 업데이트
             _isDrowsinessDetected = data['isDrowsy'] as bool;
-            debugPrint('Drowsiness state updated: $_isDrowsinessDetected');
+            //debugPrint('Drowsiness state updated: $_isDrowsinessDetected');
             break;
 
           case 'update_settings':
@@ -482,10 +482,9 @@ class _FaceDetectorViewState extends State<FaceDetectorView> {
   bool _isBusy = false; // 이미지 처리 중 여부
 
   // 오버레이 UI 관련 변수
-  OverlayEntry? _overlayEntry; // 화면 위에 표시되는 오버레이
+  //OverlayEntry? _overlayEntry; // 화면 위에 표시되는 오버레이
   final _isSleepingNotifier = ValueNotifier<bool>(false); // 졸음 상태 알림
-  static Offset _overlayPosition =
-      AppConstants.overlayInitialPosition; // 오버레이 위치
+  // static Offset _overlayPosition = AppConstants.overlayInitialPosition; // 오버레이 위치
   bool _isInitialized = false; // 초기화 완료 여부
 
   // 알람 및 진동 관련 변수
@@ -497,11 +496,6 @@ class _FaceDetectorViewState extends State<FaceDetectorView> {
 
   void Function(Object)? _taskCallback; // 콜백 참조 저장용 변수
 
-  // 카카오 로그인 관련 상태 추가
-  User? _user;
-  bool _isKakaoTalkInstalled = false;
-  final TextEditingController _searchController = TextEditingController();
-
   /// 위젯 초기화 함수
   @override
   void initState() {
@@ -509,45 +503,6 @@ class _FaceDetectorViewState extends State<FaceDetectorView> {
     _initializeServices(); // 서비스 초기화
     _initializeVolume(); // 볼륨 초기화
     _initializeServiceCommunication();
-    _initializeKakao(); // 카카오 초기화 추가
-  }
-
-  // 카카오 초기화 함수 추가
-  Future<void> _initializeKakao() async {
-    _isKakaoTalkInstalled = await isKakaoTalkInstalled();
-    try {
-      _user = await UserApi.instance.me();
-      setState(() {});
-    } catch (e) {
-      debugPrint('Not logged in');
-    }
-  }
-
-  // 로그인 처리 함수 추가
-  Future<void> _handleKakaoLogin() async {
-    try {
-      if (_isKakaoTalkInstalled) {
-        await UserApi.instance.loginWithKakaoTalk();
-      } else {
-        await UserApi.instance.loginWithKakaoAccount();
-      }
-      _user = await UserApi.instance.me();
-      setState(() {});
-    } catch (e) {
-      debugPrint('로그인 실패: $e');
-    }
-  }
-
-  // 로그아웃 처리 함수 추가
-  Future<void> _handleKakaoLogout() async {
-    try {
-      await UserApi.instance.unlink();
-      setState(() {
-        _user = null;
-      });
-    } catch (e) {
-      debugPrint('로그아웃 실패: $e');
-    }
   }
 
   /// UI와 서비스 간 통신 초기화
@@ -623,9 +578,9 @@ class _FaceDetectorViewState extends State<FaceDetectorView> {
           AppConstants.initializationDelay,
           () {
             if (mounted) {
-              _overlayEntry?.remove(); // 기존 오버레이 제거
-              _createOverlay(); // 새 오버레이 생성
-              _showOverlay(false); // 초기 상태로 표시
+              // _overlayEntry?.remove(); // 기존 오버레이 제거
+              // _createOverlay(); // 새 오버레이 생성
+              // _showOverlay(false); // 초기 상태로 표시
             }
           },
         );
@@ -711,7 +666,7 @@ class _FaceDetectorViewState extends State<FaceDetectorView> {
   /// 백그라운드에서 앱이 실행될 수 있도록 서비스 설정
   Future<void> _initializeForegroundService() async {
     // 서비스가 실행 중이 아닐 경우에만 시작
-    if ((await FlutterForegroundTask.isRunningService)) {
+    if (!(await FlutterForegroundTask.isRunningService)) {
       await FlutterForegroundTask.startService(
         serviceId: 123,
         notificationTitle: '졸음 감지 서비스',
@@ -723,55 +678,55 @@ class _FaceDetectorViewState extends State<FaceDetectorView> {
 
   /// 오버레이 UI 생성 함수.
   /// 화면 위에 표시될 졸음 감지 상태 오버레이를 생성
-  void _createOverlay() {
-    debugPrint('Creating overlay...');
-    _overlayEntry = OverlayEntry(
-      builder: (context) => Positioned(
-        left: _overlayPosition.dx,
-        top: _overlayPosition.dy,
-        child: Material(
-          color: Colors.transparent,
-          child: GestureDetector(
-            // 드래그로 위치 이동 가능하도록 설정
-            onPanUpdate: (details) {
-              _overlayPosition += details.delta;
-              _overlayEntry?.markNeedsBuild();
-            },
-            child: ValueListenableBuilder<bool>(
-              valueListenable: _isSleepingNotifier,
-              builder: (context, isSleeping, _) => Container(
-                padding: const EdgeInsets.all(AppConstants.overlayPadding),
-                decoration: AppStyles.overlayDecoration(isSleeping),
-                child: Text(
-                  isSleeping ? '졸음이 감지됨!' : '졸음 감지중...',
-                  style: AppStyles.overlayTextStyle,
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-    // 현재 context의 overlay에 접근하여 오버레이 추가
-    final overlay = Navigator.of(context).overlay;
-    if (overlay != null) {
-      debugPrint('Inserting overlay...');
-      overlay.insert(_overlayEntry!);
-    } else {
-      debugPrint('Overlay is null!');
-    }
-  }
+  // void _createOverlay() {
+  //   debugPrint('Creating overlay...');
+  //   _overlayEntry = OverlayEntry(
+  //     builder: (context) => Positioned(
+  //       left: _overlayPosition.dx,
+  //       top: _overlayPosition.dy,
+  //       child: Material(
+  //         color: Colors.transparent,
+  //         child: GestureDetector(
+  //           // 드래그로 위치 이동 가능하도록 설정
+  //           onPanUpdate: (details) {
+  //             _overlayPosition += details.delta;
+  //             _overlayEntry?.markNeedsBuild();
+  //           },
+  //           child: ValueListenableBuilder<bool>(
+  //             valueListenable: _isSleepingNotifier,
+  //             builder: (context, isSleeping, _) => Container(
+  //               padding: const EdgeInsets.all(AppConstants.overlayPadding),
+  //               decoration: AppStyles.overlayDecoration(isSleeping),
+  //               child: Text(
+  //                 isSleeping ? '졸음이 감지됨!' : '졸음 감지중...',
+  //                 style: AppStyles.overlayTextStyle,
+  //               ),
+  //             ),
+  //           ),
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  //   // 현재 context의 overlay에 접근하여 오버레이 추가
+  //   final overlay = Navigator.of(context).overlay;
+  //   if (overlay != null) {
+  //     debugPrint('Inserting overlay...');
+  //     overlay.insert(_overlayEntry!);
+  //   } else {
+  //     debugPrint('Overlay is null!');
+  //   }
+  // }
 
   /// 오버레이 표시 함수.
   /// 졸음 감지 상태에 따라 오버레이 업데이트
-  void _showOverlay(bool isSleeping) {
-    _isSleepingNotifier.value = isSleeping;
-    // 포그라운드 서비스에 상태 업데이트 전송
-    FlutterForegroundTask.sendDataToTask({
-      'action': 'update_drowsiness_state',
-      'isDrowsy': isSleeping,
-    });
-  }
+  // void _showOverlay(bool isSleeping) {
+  //   _isSleepingNotifier.value = isSleeping;
+  //   // 포그라운드 서비스에 상태 업데이트 전송
+  //   FlutterForegroundTask.sendDataToTask({
+  //     'action': 'update_drowsiness_state',
+  //     'isDrowsy': isSleeping,
+  //   });
+  // }
 
   /// 이미지 처리 함수.
   /// ML Kit를 사용하여 얼굴을 감지하고 눈 감김 상태를 분석
@@ -822,7 +777,7 @@ class _FaceDetectorViewState extends State<FaceDetectorView> {
 
       // 연속된 프레임 동안 눈을 감고 있는 경우
       if (_closedEyeFrameCount >= AppConstants.drowsinessFrameThreshold) {
-        _showOverlay(true); // 서비스에 상태 업데이트
+        // _showOverlay(true); // 서비스에 상태 업데이트
         // 마지막 알림으로부터 일정 시간이 지난 경우에만 알림 발생
         if (_lastAlertTime == null ||
             now.difference(_lastAlertTime!).inSeconds >=
@@ -842,13 +797,13 @@ class _FaceDetectorViewState extends State<FaceDetectorView> {
     _closedEyeFrameCount = 0;
     _stopAlarm();
     _stopVibration();
-    _showOverlay(false);
+    // _showOverlay(false);
   }
 
   /// 알림 트리거 함수.
   /// 졸음 감지시 알람과 진동 실행
   Future<void> _triggerAlert(bool isNightTime) async {
-    _showOverlay(true); // 졸음 감지 상태 표시
+    // _showOverlay(true); // 졸음 감지 상태 표시
 
     try {
       // 현재 볼륨 저장
@@ -939,12 +894,11 @@ class _FaceDetectorViewState extends State<FaceDetectorView> {
   /// 위젯이 dispose될 때 사용된 리소스들을 정리
   @override
   void dispose() {
-    _searchController.dispose();
     _canProcess = false; // 이미지 처리 중지
     _isSleepingNotifier.dispose(); // ValueNotifier 해제
     _faceDetector.close(); // ML Kit 얼굴 감지기 해제
     _audioPlayer.dispose(); // 오디오 플레이어 해제
-    _overlayEntry?.remove(); // 오버레이 제거
+    //_overlayEntry?.remove(); // 오버레이 제거
     _stopVibration(); // 진동 중지
 
     VolumeController()
@@ -968,7 +922,6 @@ class _FaceDetectorViewState extends State<FaceDetectorView> {
         ),
       );
     }
-
     return Scaffold(
       body: Stack(
         fit: StackFit.expand,
@@ -976,79 +929,6 @@ class _FaceDetectorViewState extends State<FaceDetectorView> {
           CameraView(
             onImage: _processImage,
             initialCameraLensDirection: CameraLensDirection.front,
-          ),
-          // 카카오 로그인 UI를 오버레이로 추가
-          Positioned.fill(
-            child: Material(
-              color: Colors.transparent,
-              child: Container(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    // 로그인 상태에 따른 UI
-                    if (_user != null) ...[
-                      // 로그인된 경우 목적지 검색 UI 표시
-                      Container(
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.9),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            TextField(
-                              controller: _searchController,
-                              decoration: AppStyles.searchFieldDecoration,
-                              onSubmitted: (value) async {
-                                if (value.isNotEmpty) {
-                                  final places = await KakaoSearchApi.instance
-                                      .searchPlace(value);
-                                  if (places.isNotEmpty) {
-                                    if (!context.mounted) return;
-                                    try {
-                                      await NaviApi.instance.navigate(
-                                        destination: Location(
-                                          name: places.first.name,
-                                          x: places.first.x,
-                                          y: places.first.y,
-                                        ),
-                                        option: NaviOption(
-                                          coordType: CoordType.wgs84,
-                                        ),
-                                      );
-                                    } catch (e) {
-                                      debugPrint('네비게이션 실행 실패: $e');
-                                    }
-                                  }
-                                }
-                              },
-                            ),
-                            const SizedBox(height: 8),
-                            ElevatedButton(
-                              style: AppStyles.elevatedButtonStyle,
-                              onPressed: _handleKakaoLogout,
-                              child: const Text('로그아웃'),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ] else ...[
-                      // 로그인되지 않은 경우 로그인 버튼 표시
-                      GestureDetector(
-                        onTap: _handleKakaoLogin,
-                        child: Image.asset(
-                          'assets/kakao_login_large_narrow.png',
-                          height: 90,
-                        ),
-                      ),
-                    ],
-                    const SizedBox(height: 32), // 하단 여백
-                  ],
-                ),
-              ),
-            ),
           ),
         ],
       ),
@@ -1156,11 +1036,7 @@ class _CameraViewState extends State<CameraView> {
   /// UI 빌드 함수
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-          // color: Colors.black, // 배경색을 검정으로 설정
-          ),
-    );
+    return const KakaoLoginTest();
   }
 
   /// 디바이스 방향별 회전 각도 매핑
@@ -1391,7 +1267,7 @@ class _KakaoLoginState extends State<KakaoLogin> with UserStateMixin {
       debugPrint('카카오계정으로 로그인 성공 ${token.accessToken}');
       await loadUserData(); // 로그인 후 사용자 정보 새로고침
       if (mounted) {
-        _moveToLoginDone();
+        setState(() {});
       }
     } catch (e) {
       debugPrint('카카오계정으로 로그인 실패 $e');
@@ -1405,7 +1281,7 @@ class _KakaoLoginState extends State<KakaoLogin> with UserStateMixin {
       debugPrint('카카오톡으로 로그인 성공 ${token.accessToken}');
       await loadUserData(); // 로그인 후 사용자 정보 새로고침
       if (mounted) {
-        _moveToLoginDone();
+        setState(() {});
       }
     } catch (e) {
       debugPrint('카카오톡으로 로그인 실패 $e');
@@ -1432,6 +1308,9 @@ class _KakaoLoginState extends State<KakaoLogin> with UserStateMixin {
 
   // 로그인 성공 후 화면 이동
   void _moveToLoginDone() {
+    // 먼저 현재 상태 새로고침
+    //setState(() {});
+
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const LoginDone()),
