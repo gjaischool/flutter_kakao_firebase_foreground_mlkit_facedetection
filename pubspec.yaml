@@ -57,6 +57,7 @@ flutter:
   uses-material-design: true
   assets:
   - assets/kakao_login_large_narrow.png
+  - assets/kakao_login_medium_narrow.png
   - assets/alarm.wav
 
 

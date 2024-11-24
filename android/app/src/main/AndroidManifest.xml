@@ -12,9 +12,9 @@
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
 
     <application
-        android:label="flutter_kakaonavi_mlkit"
+        android:label="ZolaGO!"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ss">
         <activity
             android:name=".MainActivity"
             android:exported="true"

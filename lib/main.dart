@@ -1163,6 +1163,7 @@ class _KakaoLoginTestState extends State<KakaoLoginTest> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Kakao Login Test',
       // 앱의 전체적인 테마 설정
       theme: ThemeData(
@@ -1345,9 +1346,6 @@ class _KakaoLoginState extends State<KakaoLogin> with UserStateMixin {
 
   // 로그인 성공 후 화면 이동
   void _moveToLoginDone() {
-    // 먼저 현재 상태 새로고침
-    //setState(() {});
-
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const LoginDone()),
@@ -1361,7 +1359,7 @@ class _KakaoLoginState extends State<KakaoLogin> with UserStateMixin {
     }
     return Scaffold(
       appBar: AppBar(
-        title: const Text('카카오 로그인 테스트'),
+        title: const Text('T라분석해'),
       ),
       body: Center(
         child: Column(
@@ -1383,13 +1381,39 @@ class _KakaoLoginState extends State<KakaoLogin> with UserStateMixin {
                 child: const Text('로그아웃'),
               ),
             ] else ...[
+              // 앱 설명 텍스트
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                child: Column(
+                  children: [
+                    Text(
+                      '졸음운전 사고방지 어플리케이션',
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: AppConstants.kakaoBrown,
+                          ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: AppConstants.defaultSpacing),
+                    Text(
+                      '카메라가 작동 중입니다\n',
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                            height: 1.5,
+                            color: Colors.black87,
+                          ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: AppConstants.largeSpacing),
               // 로그인 버튼
               GestureDetector(
                 onTap: _handleLogin,
                 child: Image.asset(
                   'assets/kakao_login_large_narrow.png',
                   height: 90, // 카카오 로그인 버튼의 표준 높이
-                  width: 366, // 적절한 너비 설정
+                  width: 240, // 적절한 너비 설정
                 ),
               ),
             ],
