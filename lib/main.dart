@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
+import 'firebase_options.dart';
 import 'package:flutter/material.dart';
 
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
@@ -16,6 +17,9 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:kakao_flutter_sdk_navi/kakao_flutter_sdk_navi.dart';
 import 'package:http/http.dart' as http;
+
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 // 상수 분리
 class AppConstants {
@@ -282,6 +286,13 @@ void main() async {
   /// 3. 특히 main() 함수가 async일 때 필수적
   /// 4. SharedPreferences, 카메라, 파일 시스템 등의 플랫폼 서비스 사용 전에 호출되어야 함
   WidgetsFlutterBinding.ensureInitialized();
+//flutterfire configure --android-package-name="com.example.flutter_kakaonavi_mlkit" --project=flutterkakaomlkit
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  FirebaseDatabase.instance.databaseURL =
+      'https://flutterkakaomlkit-default-rtdb.firebaseio.com/';
 
   // Kakao SDK 초기화 - 네이티브 앱 키 설정
   KakaoSdk.init(
@@ -495,6 +506,10 @@ class _FaceDetectorViewState extends State<FaceDetectorView> {
   late double _originalVolume; // 원래 볼륨을 저장할 변수
 
   void Function(Object)? _taskCallback; // 콜백 참조 저장용 변수
+
+  // Firebase Database 인스턴스 추가
+  final DatabaseReference _database = FirebaseDatabase.instance.ref();
+  int jsonCount = 0;
 
   /// 위젯 초기화 함수
   @override
@@ -760,7 +775,8 @@ class _FaceDetectorViewState extends State<FaceDetectorView> {
 
   /// 졸음 감지 함수.
   /// 눈 감김 확률을 기반으로 졸음 상태를 판단
-  void _detectDrowsiness(double leftEyeOpenProb, double rightEyeOpenProb) {
+  void _detectDrowsiness(
+      double leftEyeOpenProb, double rightEyeOpenProb) async {
     final now = DateTime.now();
     // 야간 시간대(22시 ~ 05시) 여부 확인
     final isNightTime = now.hour >= AppConstants.nightTimeStartHour ||
@@ -784,6 +800,27 @@ class _FaceDetectorViewState extends State<FaceDetectorView> {
                 AppConstants.defaultAlertInterval) {
           _triggerAlert(isNightTime);
           _lastAlertTime = now;
+
+          // Firebase에 졸음 감지 데이터 저장
+          try {
+            jsonCount++;
+            await _database.child('졸음감지됨 $jsonCount').push().set({
+              'timestamp': now.toIso8601String(),
+              'isNightTime': isNightTime,
+              'threshold': threshold,
+              '_drowsinessFrameThreshold':
+                  AppConstants.drowsinessFrameThreshold,
+              'leftEyeOpenProb': leftEyeOpenProb,
+              'rightEyeOpenProb': rightEyeOpenProb,
+            });
+            debugPrint('졸음 감지 데이터 저장 완료: ${now.toIso8601String()}');
+          } catch (error) {
+            debugPrint('졸음 감지 데이터 저장 실패: $error');
+            debugPrint('Error stack trace: ${StackTrace.current}');
+          }
+
+          //_triggerAlert(isNightTime);
+          //_lastAlertTime = now;
         }
       }
     } else {

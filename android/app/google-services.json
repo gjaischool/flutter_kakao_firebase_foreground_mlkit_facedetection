@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "745637958471",
+    "firebase_url": "https://flutterkakaomlkit-default-rtdb.firebaseio.com",
+    "project_id": "flutterkakaomlkit",
+    "storage_bucket": "flutterkakaomlkit.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:745637958471:android:e09beacc3a1221b3977262",
+        "android_client_info": {
+          "package_name": "com.example.flutter_kakaonavi_mlkit"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA-vFp2sEjgeSYIqYs1x8cq1os8HoqKjYk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
