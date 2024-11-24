@@ -7,12 +7,12 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyA-vFp2sEjgeSYIqYs1x8cq1os8HoqKjYk',
-    appId: '1:745637958471:android:e09beacc3a1221b3977262',
-    messagingSenderId: '745637958471',
-    projectId: 'flutterkakaomlkit',
-    databaseURL: 'https://flutterkakaomlkit-default-rtdb.firebaseio.com',
-    storageBucket: 'flutterkakaomlkit.firebasestorage.app',
+    apiKey: 'AIzaSyA-vFp2sEjgeSYIqYs1x8cq14os8HoqKjYk',
+    appId: '1:7456379458471:android:e09beacc3a12221b3977262',
+    messagingSenderId: '7456379587471',
+    projectId: 'flutterkakaomlkits',
+    databaseURL: 'https://flutterkakaomlkits-default-rtdb.firebaseio.com',
+    storageBucket: 'flutterkakaomlkits.firebasestorage.app',
   );
 
   // 이 값은 파이어베이스 json파일에서 있음
