@@ -165,7 +165,7 @@ class Place {
 // 최적화된 API 클래스
 class KakaoSearchApi {
   // REST API 키
-  static const String apiKey = "8938a9bd987f7a76e955d29ed7c4c6ee";
+  static const String apiKey = "8938a9bd987f7a76e955d29e4d7c4c6ee";
   static KakaoSearchApi? _instance;
   http.Client? _client; // HTTP 클라이언트 재사용
 
@@ -285,7 +285,7 @@ void main() async {
 
   // Kakao SDK 초기화 - 네이티브 앱 키 설정
   KakaoSdk.init(
-    nativeAppKey: 'e0d646fb8b530736372d5b725b323514',
+    nativeAppKey: 'e0d646fb8b5307363272d5b725b323514',
   );
 
   // 포그라운드 서비스 초기화
